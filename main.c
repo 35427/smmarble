@@ -15,16 +15,19 @@
 #define FOODFILEPATH "marbleFoodConfig.txt"
 #define FESTFILEPATH "marbleFestivalConfig.txt"
 
-#define MAX_NODE		100
+#define MAX_PLAYER		100
+
 //board configuration parameters
 static int board_nr;
 static int food_nr;
 static int festival_nr;
+
 static int player_nr;
 
 static int player_energy[MAX_PLAYER];
 static int player_position[MAX_PLAYER];
 static char player_name[MAX_PLAYER][MAX_CHARNAME];
+
 
 //function prototypes
 #if 0
@@ -39,24 +42,26 @@ void* findGrade(int player, char *lectureName); //find the grade from the player
 void printGrades(int player); //print all the grade history of the player
 #endif
 
-
-void generatePlayers(int n, int initEnergy); //generate a new player
+void generatePlayers(int n, int initEnergy) //generate a new player
 {
-	//n time loop
 	int i;
-	for (i=0;i<n;i++){
+	//n time loop
+	for(i=0; i<n; i++)
+	{
+		//input name
+	    printf("????? ????????:");
+	    scanf("%s", player_name[i]);
+	    fflush(stdin);
 	
-	//input name
-	printf("enter name : ");
-	scanf("%s", player_name[]);
+	    //set position
+	    player_position[i] = 0;
+	    
+	    //set energy
+	    player_energy[i] = initEnergy;
+	}
+}
 
-	//set position
-	player_position[i]=0;
-	
-	//set energy
-	player_energy[i] = initEnergy;
-}
-}
+
 
 int rolldie(int player)
 {
@@ -122,9 +127,9 @@ int main(int argc, const char * argv[]) {
     printf("Total number of board nodes : %i\n", board_nr);
     
     for(i=0; i<board_nr; i++)
-    printf("node %i : %s, %i\n", i, smmObj_getNodeName(i), smmObj_getNodeType(i));
+    printf("node %i : %s, %i(%s)\n", i, smmObj_getNodeName(i), smmObj_getNodeType(i), smmObj_getTypeName(smmObj_getNodeType));
     
-    
+    printf("(%s)", smmObj_getTypeName(SMMNODE_TYPE_LECTURE));
     #if 0
     //2. food card config 
     if ((fp = fopen(FOODFILEPATH,"r")) == NULL)
@@ -161,19 +166,19 @@ int main(int argc, const char * argv[]) {
     
     
     //2. Player configuration ---------------------------------------------------------------------------------
-   
+    
     do
     {
-	printf("input player no. :");
-    scanf("%d", &player_nr);
-    fflash(stdin);
-        //input player number to player_nr
+	    //input player number to player_nr
+	    printf("input player no.:");
+		scanf("%d", &player_nr);
+		fflash(stdin);
     }
-    while (player_nr <= 0 || player > MAX_PLAYER);
+    while (player_nr < 0 || player > MAX_PLAYER);
     
     
     generatePlayers(player_nr, initEnergy);
-    /*
+    
     
     //3. SM Marble game starts ---------------------------------------------------------------------------------
     while () //is anybody graduated?

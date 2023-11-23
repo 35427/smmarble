@@ -13,19 +13,24 @@
 #define MAX_GRADE       9
 #define MAX_NODE		100
 
-static char smmNodeName[SMMNODE_TYPE_MAX]][MAX_CHARNAME]={
+
+
+static char smmNodeName[SMMNODE_TYPE_MAX][MAX_CHARNAME] = {
 	"lecture",
 	"restaurant",
-	"laboratory",
+	"lab",
 	"home",
 	"gotolab",
-	"foodchance",
+	"foodChance",
 	"festival"
 };
 
-char* smmObj_getTypeName(int type){
+
+char* smmObj_getTypeName(int type)
+{
 	return (char*)smmNodeName[type];
 }
+
 
 static char smmObj_name[MAX_NODE][MAX_CHARNAME];
 static int smmObj_type[MAX_NODE];
