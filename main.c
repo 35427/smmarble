@@ -101,17 +101,16 @@ void printGrades(int player); //print all the grade history of the player
 #endif
 
 int endflag = 0; 
-
 void goForward(int player, int step) {
 	//player_t *cur_player[MAX_PLAYER];
     //int nextNode = PlayerList[player].nodeNum + step;
     int nextNode = cur_player[player].accumCredit + step;
-    int totalNodes = 7;/* 전체 노드 수를 여기에 입력하세요 */;
+    int totalNodes = 7;/* 전체 노드 수를 여기에 입력하세요 ;
     
     if (nextNode >= totalNodes) {
         nextNode %= totalNodes;
-        // 플레이어가 졸업 조건을 만족하면서 맵을 한 바퀴 이상 돌았을 때 추가적인 동작을 여기에 넣어주세요.
-        // 예를 들어, 특정 보상을 주거나 추가 이벤트를 발생시키는 등의 동작을 넣을 수 있습니다.
+        printf("Congratulations!");
+        // 플레이어가 졸업 조건을 만족하면서 맵을 한 바퀴 이상 돌았을 때 
     }
     
     // 플레이어 위치 업데이트
@@ -133,7 +132,7 @@ void printGrades(int player)
      for (i=0;i<smmdb_len(LISTNO_OFFSET_GRADE + player);i++)
      {
          gradePtr = smmdb_getData(LISTNO_OFFSET_GRADE + player, i);
-         //printf("%s : %i\n", smmObj_getNodeName(gradePtr), smmObj_getNodeGrade(gradePtr));
+         printf("%s : %i\n", smmObj_getNodeName(gradePtr), smmObj_getNodeGrade(gradePtr));
      }
 }
 
@@ -178,25 +177,19 @@ void generatePlayers(int n, int initEnergy) {
     int i;
     cur_player = malloc(n * sizeof(player_t)); // 플레이어 수에 맞게 메모리를 할당합니다.
 
-    //n time loop
+    // n번 반복하여 플레이어 정보를 입력받습니다.
     for (i = 0; i < n; i++) {
-        //input name
-        printf("Input player %i's name:", i); //??? ????
-       // scanf("%s", cur_player[i].name);
-       scanf("%s", cur_player[i].name);
+        printf("Input player %i's name:", i);
+        scanf("%s", cur_player[i].name);
         fflush(stdin);
 
-        //set position
+        // 나머지 플레이어 정보 초기화
         cur_player[i].position = 0;
-
-        //set energy
         cur_player[i].energy = initEnergy;
         cur_player[i].accumCredit = 0;
         cur_player[i].flag_graduate = 0;
     }
 }
-
-
 int rolldie(int player)
 {
     char c;
@@ -213,13 +206,13 @@ int rolldie(int player)
 }
 
 //action code when a player stays at a node
-void actionNode(int player)
+/*void actionNode(int player)
 {
     void *boardPtr = smmdb_getData(LISTNO_NODE, cur_player[player].position );
     //int type = smmObj_getNodeType( cur_player[player].position );
-    int type = smmObj_getNodeType( boardPtr );
+    int type = smmObj_getNodeType(boardPtr);
     char *name = smmObj_getNodeName( boardPtr );
-    void *gradePtr;
+    void *gradePtr; } */
     
   /*  switch(type)
     {
@@ -245,9 +238,9 @@ void actionNode(int player) {
     void *boardPtr = smmdb_getData(LISTNO_NODE, cur_player[player].position);
     int type = smmObj_getNodeType(boardPtr);
     char *name = smmObj_getNodeName(boardPtr);
-    void *gradePtr;
+    void *gradePtr = NULL; // gradePtr을 초기화합니다.
 
-       switch(type) {
+    switch (type) {
         case SMMNODE_TYPE_LECTURE:
             if (cur_player[player].accumCredit >= smmObj_getNodeCredit(boardPtr)) {
                 cur_player[player].accumCredit += smmObj_getNodeCredit(boardPtr);
@@ -255,10 +248,10 @@ void actionNode(int player) {
 
                 // Grade generation
                 cur_player[player].accumCredit += smmObj_getNodeCredit(boardPtr);
-				cur_player[player].energy -= smmObj_getNodeEnergy(boardPtr);
+                cur_player[player].energy -= smmObj_getNodeEnergy(boardPtr);
 
-                //gradePtr = smmObj_genObject(name, smmObjType_grade, 0, smmObj_getNodeCredit(boardPtr), 0, (int)(generateRandomGrade() * 10));
-                smmdb_addTail(LISTNO_OFFSET_GRADE + player, gradePtr);
+                // gradePtr을 생성해야 하지만, 어떻게 할지에 대한 정보가 없습니다.
+                // smmdb_addTail(LISTNO_OFFSET_GRADE + player, gradePtr);
             } else {
                 printf("Not enough credit to attend this lecture.\n");
             }
@@ -270,9 +263,7 @@ void actionNode(int player) {
 }
 
 
-
-
-void goForward(int player, int step)
+/*void goForward(int player, int step)
 {
      void *boardPtr;
      cur_player[player].position += step;
@@ -281,7 +272,9 @@ void goForward(int player, int step)
      printf("%s go to node %i (name: %s)\n"), 
                 cur_player[player].name, cur_player[player].position,
                 smmObj_getNodeName(boardPtr);
-}
+}*/
+
+
 
 
 int main(int argc, const char * argv[]) {
@@ -312,19 +305,44 @@ int main(int argc, const char * argv[]) {
     }
     
     printf("Reading board component......\n");
-    while ( fscanf(fp, "%s %i %i %i", name, &type, &credit, &energy) == 4 ) //read a node parameter set
+    
+    void *boardObj;
+    
+    while (fscanf(fp, "%s %i %i %i", name, &type, &credit, &energy) == 4) {
+    // 데이터를 생성하여 boardObj에 할당
+  	boardObj = smmObj_genObject(name, smmObjType_board, type, credit, energy, 0);
+
+ 	if (boardObj != NULL) {
+    	if (type == SMMNODE_TYPE_HOME)
+        initEnergy = energy;
+	}	
+    board_nr++;
+
+}
+
+/*while (fscanf(fp, "%s %i %i %i", name, &type, &credit, &energy) == 4) {
+    // 데이터를 생성하여 boardObj에 할당
+    smmObj_genObject(name, smmObjType_board, type, credit, energy, 0);
+
+    if (type == SMMNODE_TYPE_HOME)
+        initEnergy = energy;
+
+    board_nr++;
+}*/
+
+    /*while ( fscanf(fp, "%s %i %i %i", name, &type, &credit, &energy) == 4 ) //read a node parameter set
     {
         //store the parameter set
-        //(char* name, smmObjType_e objType, int type, int credit, int energy, smmObjGrade_e grade);
-       // void*boardObj = smmObj_genObject(name, smmObjType_board, type, credit, energy, 0);
-        (void)smmdb_addTail(LISTNO_OFFSET_GRADE + player, gradePtr);
-
-        //smmdb_addTail(LISTNO_NODE, boardObj);
+        (char* name, smmObjType_e objType, int type, int credit, int energy, smmObjGrade_e grade);
+        (void)smmObj_genObject(name, smmObjType_board, type, credit, energy, 0);
+        //void*boardObj = smmObj_genObject(name, smmObjType_board, type, credit, energy, 0);
+        
         
         if (type == SMMNODE_TYPE_HOME)
            initEnergy = energy;
         board_nr++;
-    }
+    }*/
+    
     fclose(fp);
     printf("Total number of board nodes : %i\n", board_nr);
     
@@ -419,4 +437,4 @@ int main(int argc, const char * argv[]) {
     free(cur_player);
     system("PAUSE");
     return 0;
-} }
+}} 
