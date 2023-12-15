@@ -133,7 +133,7 @@ void printGrades(int player)
      for (i=0;i<smmdb_len(LISTNO_OFFSET_GRADE + player);i++)
      {
          gradePtr = smmdb_getData(LISTNO_OFFSET_GRADE + player, i);
-         printf("%s : %i\n", smmObj_getNodeName(gradePtr), smmObj_getNodeGrade(gradePtr));
+         //printf("%s : %i\n", smmObj_getNodeName(gradePtr), smmObj_getNodeGrade(gradePtr));
      }
 }
 
@@ -315,8 +315,8 @@ int main(int argc, const char * argv[]) {
     while ( fscanf(fp, "%s %i %i %i", name, &type, &credit, &energy) == 4 ) //read a node parameter set
     {
         //store the parameter set
-        //(char* name, smmObjType_e objType, int type, int credit, int energy, smmObjGrade_e grade)
-        //(void)*boardObj = smmObj_genObject(name, smmObjType_board, type, credit, energy, 0);
+        //(char* name, smmObjType_e objType, int type, int credit, int energy, smmObjGrade_e grade);
+       // void*boardObj = smmObj_genObject(name, smmObjType_board, type, credit, energy, 0);
         (void)smmdb_addTail(LISTNO_OFFSET_GRADE + player, gradePtr);
 
         //smmdb_addTail(LISTNO_NODE, boardObj);

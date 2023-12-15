@@ -84,14 +84,15 @@ typedef enum {
 
 
 //object generation
-void smmObj_genObject(char* name, smmObjType_e objType, int type, int credit, int energy, smmObjGrade_e grade);
+void* smmObj_genObject(char* name, smmObjType_e objType, int type, int credit, int energy, smmObjGrade_e grade);
+
 
 //member retrieving
 //char* smmObj_getNodeName(int node_nr);
-char* smmObj_getNodeName(int* node_nr);
-int smmObj_getNodeType(int node_nr);
-int smmObj_getNodeCredit(int node_nr);
-int smmObj_getNodeEnergy(int node_nr);
+char* smmObj_getNodeName(void*obj);
+int smmObj_getNodeType(void*node_nr);
+int smmObj_getNodeCredit(void*node_nr);
+int smmObj_getNodeEnergy(void*node_nr);
 
 //element to string
 char* smmObj_getTypeName(int type);
