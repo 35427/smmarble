@@ -35,7 +35,7 @@ typedef enum smmObjType{
 */
 
 //object generation
-void smmObj_genObject(char* name, smmObjType_e objType, int type, int credit, int energy, int smmObjGrade_e_grade){
+void* smmObj_genObject(char* name, smmObjType_e objType, int type, int credit, int energy, int smmObjGrade_e_grade){
 
 };
 
