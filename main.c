@@ -6,7 +6,9 @@
 //
 
 #include <time.h>
+#include <stdio.h>
 #include <string.h>
+#include <stdlib.h>
 #include "smm_object.h"
 #include "smm_database.h"
 //#include "smm_common.h"
@@ -91,7 +93,7 @@ void generatePlayers(int n, int initEnergy) //generate a new player
          //input name
          printf("Input player %i's name:", i); 
          scanf("%s", cur_player[i].name);
-         //fflush(stdin);
+         fflush(stdin);
          
          //set position
          //player_position[i] = 0;
@@ -111,7 +113,7 @@ int rolldie(int player)
     char c;
     printf(" Press any key to roll a die (press g to see grade): ");
     c = getchar();
-    //fflush(stdin);
+    fflush(stdin);
     
 #if 1
     if (c == 'g')
@@ -139,7 +141,7 @@ void actionNode(int player)
             cur_player[player].energy -= smmObj_getNodeEnergy( boardPtr );
             
             //grade generation
-           // gradePtr = smmObj_genObject(name, smmObjType_grade, 0, smmObj_getNodeCredit( boardPtr ), 0, 0);
+            gradePtr = smmObj_genObject(name, smmObjType_grade, 0, smmObj_getNodeCredit( boardPtr ), 0, 0);
             smmdb_addTail(LISTNO_OFFSET_GRADE + player, gradePtr);
             
             break;
@@ -157,7 +159,7 @@ void goForward(int player, int step)
      
      printf("%s go to node %i (name: %s)\n", 
                 cur_player[player].name, cur_player[player].position,
-                smmObj_getNodeName(boardPtr);
+                smmObj_getNodeName(boardPtr));
 }
 
 
