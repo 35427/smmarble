@@ -15,13 +15,13 @@
 
 
 static char smmNodeName[SMMNODE_TYPE_MAX][MAX_CHARNAME] = {
-       "강의실",
-       "레스토랑",
-       "실험실",
-       "집",
-       "실험실로이동",
-       "음식찬스",
-       "축제카드"
+       "?????",
+       "???????",
+       "?????",
+       "??",
+       "?????????",
+       "????????",
+       "???????"
 };
 
 char* smmObj_getTypeName(int type)
@@ -52,7 +52,7 @@ typedef enum smmObjGrade {
     smmObjGrade_Cm
 } smmObjGrade_e;
 
-//1. 구조체 형식 정의  
+//1. ????u ???? ????  
 typedef struct smmObject {
        char name[MAX_CHARNAME];
        smmObjType_e objType; 
@@ -65,7 +65,7 @@ typedef struct smmObject {
 //static smmObject_t smm_node[MAX_NODE];
 //static int smmObj_noNode = 0;
 
-//3. 관련 함수 변경  
+//3. ???? ??? ????  
 //object generation
 void* smmObj_genObject(char* name, smmObjType_e objType, int type, int credit, int energy, smmObjType_e grade)
 {    
