@@ -168,7 +168,7 @@ void actionNode(int player) {
             break;
 
         case SMMNODE_TYPE_GOTOLAB:
-            printf("실험실로 가야합니다. 횅운을 빌어요!\n");
+            printf("실험실로 가야합니다. 행운을 빌어요!\n");
             cur_player[player].experience = 1;
             cur_player[player].position = success;
             break;
