@@ -12,6 +12,7 @@
 
 
 #include "smm_object.h"
+
 #include "smm_database.h"
 #include "smm_common.h"
 
@@ -37,6 +38,11 @@ typedef struct foood_chance {
        int menuId; //메뉴의 이름
 	   char menuName[15]; //메뉴의 개수 
 } foood_chance_e;
+
+typedef struct festivall_chance {
+       int menufestival; //축제카드의 이름
+	   char festivalName[6]; //축제의 개수 
+} festivall_chance_e;
 
 typedef struct player {
         int energy;
@@ -132,6 +138,7 @@ int rolldie(int player) // 주사위를 굴림
     
     return (rand()%MAX_DIE + 1);
 }
+
 
 //action code when a player stays at a node
 void actionNode(int player) {
@@ -249,9 +256,39 @@ void actionNode(int player) {
             
             break;
 
-        case SMMNODE_TYPE_FESTIVAL:
+        case SMMNODE_TYPE_FESTIVAL: // 음식 찬스 칸에 도착
+		{
+			 int random_festival = rand() % festival_nr; // 축제카드의 개수에 맞게 난수 생성
+    		festivall_chance_e* random_festival_data = smmdb_getData(LISTNO_FESTCARD, random_festival); // 축제 데이터 가져오기
+
+    		printf("음식 카드 찬스!\n");
+    		printf("당신이 즐길 축제는 %s입니다.\n", random_festival_data->festivalName);
+    		
+			// 축제카드에 따른 행동 구현
+    		switch(random_festival)  {
+        case 1:
+            printf("노래한곡하고가시죠.\n");
             
             break;
+        case 2: 
+            printf("졸업후포부한마디해주세요.\n");
+            
+            break;
+        case 3: 
+            printf("오늘집에가서뭐하고싶어요?\n");
+            
+            break;
+        case 4: 
+            printf("프로그래밍수업에대한소감한마디해주세요.\n");
+            
+            break;
+        case 5:
+            printf("동네맛집하나소개해주세요.\n");
+            
+            break;
+		 } 
+            
+           
 
         default:
             
@@ -333,7 +370,7 @@ int main(int argc, const char * argv[]) {
     while ( fscanf(fp, "%s %i %i %i", name, &type, &credit, &energy) == 4 ) //read a node parameter set
     {
         //store the parameter set
-       // char* smmObj_genObject = (name, smmObjType_e objType, type, credit,  energy,  grade);
+       
         void *boardObj = smmObj_genObject(name, smmObjType_board, type, credit, energy, 0);
         smmdb_addTail(LISTNO_NODE, boardObj);
         
@@ -436,4 +473,4 @@ int main(int argc, const char * argv[]) {
     free(cur_player);
     system("PAUSE");
     return 0;
-}
+} }

@@ -60,7 +60,7 @@ typedef struct smmObject {
        int type;
        int credit;
        int energy;
-        grade;
+       int grade;
 } smmObject_t;
 
 //static smmObject_t smm_node[MAX_NODE];
