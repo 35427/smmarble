@@ -8,6 +8,8 @@
 #ifndef smm_object_h
 #define smm_object_h
 
+
+
 #define SMMNODE_TYPE_LECTURE       0
 #define SMMNODE_TYPE_RESTAURANT    1 
 #define SMMNODE_TYPE_LABORATORY    2
@@ -34,16 +36,17 @@ typedef enum smmObjType{
     festival
 */
 
-//object generation
-void* smmObj_genObject(char* name, smmObjType_e objType, int type, int credit, int energy, int smmObjGrade_e_grade){
 
-};
+typedef enum smmObjGrade_e smmObjGrade_e;
+//object generation
+void* smmObj_genObject(char* name, smmObjType_e objType, int type, int credit, int energy, smmObjGrade_e grade);
 
 //member retrieving
 char* smmObj_getNodeName(void*obj);
 int smmObj_getNodeType(void*obj);
 int smmObj_getNodeCredit(void*obj);
 int smmObj_getNodeEnergy(void*obj);
+
 
 //element to string
 char* smmObj_getTypeName(int type);

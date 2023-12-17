@@ -69,7 +69,7 @@ void printGrades(int player); //print all the grade history of the player
 #endif
 
 
-void printGrades(int player)
+void printGrades(int player) // 플레이어의 전체 성적을 출력함 
 {
      int i;
      void *gradePtr;
@@ -94,7 +94,7 @@ void printPlayerStatus(void)
      }
 }
 
-void generatePlayers(int n, int initEnergy) //generate a new player
+void generatePlayers(int n, int initEnergy) //새 플레이어를 생성 
 {
      int i;
      //n time loop
@@ -118,7 +118,7 @@ void generatePlayers(int n, int initEnergy) //generate a new player
 }
 
 
-int rolldie(int player)
+int rolldie(int player) // 주사위를 굴림 
 {
     char c;
     printf(" Press any key to roll a die (press g to see grade): ");
@@ -141,20 +141,21 @@ void actionNode(int player) {
     void *gradePtr;
 
     switch(type) {
-        case SMMNODE_TYPE_LECTURE:
+        case SMMNODE_TYPE_LECTURE: // 강의 칸에 도착 
             cur_player[player].accumCredit += smmObj_getNodeCredit(boardPtr);
             cur_player[player].energy -= smmObj_getNodeEnergy(boardPtr);
 
-            // Grade generation
+            // Grade generation 
+            
             gradePtr = smmObj_genObject(name, smmObjType_grade, 0, smmObj_getNodeCredit(boardPtr), 0, 0);
             smmdb_addTail(LISTNO_OFFSET_GRADE + player, gradePtr);
             break;
 
-        case SMMNODE_TYPE_RESTAURANT:
+        case SMMNODE_TYPE_RESTAURANT: //식당 칸에 도착 
             cur_player[player].energy += smmObj_getNodeEnergy(boardPtr);
             break;
 
-        case SMMNODE_TYPE_LABORATORY:
+        case SMMNODE_TYPE_LABORATORY: //실험실 칸에 도착 
             if (cur_player[player].experience) {
                 printf("화이팅! 행운을 빌어요.\n");
             } else {
@@ -162,18 +163,18 @@ void actionNode(int player) {
             }
             break;
 
-        case SMMNODE_TYPE_HOME:
+        case SMMNODE_TYPE_HOME: // 집에 도착 
             cur_player[player].energy += home_energy;
             printf("집에서 푹 쉬어서 에너지가 회복되었습니다!\n");
             break;
 
-        case SMMNODE_TYPE_GOTOLAB:
+        case SMMNODE_TYPE_GOTOLAB: //실험실로 가야 하는 칸에 도착 
             printf("실험실로 가야합니다. 행운을 빌어요!\n");
             cur_player[player].experience = 1;
             cur_player[player].position = success;
             break;
 
-        case SMMNODE_TYPE_FOODCHANCE:
+        case SMMNODE_TYPE_FOODCHANCE: //음식 찬스 칸에 도착 
         	{
         		int random_food = rand()%food_nr; 
         		foood_chance_e*random_food_data = smmdb_getData(LISTNO_FOODCARD, random_food);
@@ -332,9 +333,10 @@ int main(int argc, const char * argv[]) {
     while ( fscanf(fp, "%s %i %i %i", name, &type, &credit, &energy) == 4 ) //read a node parameter set
     {
         //store the parameter set
-        //(char* name, smmObjType_e objType, int type, int credit, int energy, smmObjGrade_e grade)
+       // char* smmObj_genObject = (name, smmObjType_e objType, type, credit,  energy,  grade);
         void *boardObj = smmObj_genObject(name, smmObjType_board, type, credit, energy, 0);
         smmdb_addTail(LISTNO_NODE, boardObj);
+        
         
         if (type == SMMNODE_TYPE_HOME)
            initEnergy = energy;
