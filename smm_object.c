@@ -14,6 +14,16 @@
 #define MAX_NODE        100
 
 
+typedef struct player {
+        int energy;
+        int position;
+        char name[MAX_CHARNAME];
+        int accumCredit; // 누적된 학점 
+        int flag_graduate; // 졸업 여부  
+        int experience;  
+} player_t;
+
+
 static char smmNodeName[SMMNODE_TYPE_MAX][MAX_CHARNAME] = { 
        "?????",
        "???????",
@@ -51,12 +61,14 @@ typedef enum smmObjGrade { // 노드의 성적을 나타냄
     smmObjGrade_Cp,
     smmObjGrade_C0,
     smmObjGrade_Cm
+    
 }smmObjGrade_e;
 
 //1. ????u ???? ????  
 typedef struct smmObject {
        char name[MAX_CHARNAME];
        smmObjType_e objType; 
+       smmObjGrade_e objgrade; 
        int type;
        int credit;
        int energy;
@@ -68,7 +80,7 @@ typedef struct smmObject {
 
 //3. ???? ??? ????  
 //object generation
-void* smmObj_genObject(char* name, smmObjType_e objType, int type, int credit, int energy, smmObjGrade_e grade)
+void* smmObj_genObject(char* name, smmObjType_e objType, int type, int credit, int energy, smmObjGrade_e objgrade)
 {    
     smmObject_t* ptr;
     

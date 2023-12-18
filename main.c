@@ -86,7 +86,7 @@ void printGrades(int player) // 플레이어의 전체 성적을 출력함
      }
 }
 
-void printPlayerStatus(void)
+void printPlayerStatus(void) // 플레이어의 상태를 출력함 
 {
      int i;
      
@@ -325,13 +325,13 @@ void goForward(int player, int step) {
         cur_player[player].experience = 0;
     }
 
-    if (nextNode >= board_nr) {
+    if (nextNode >= board_nr) { // 플레이어가 집을 지나치거나 집에 도착했을 경우 
         printf("집에서 쉬었습니다! 당신은 에너지를 회복했습니다.\n", home_energy);
         cur_player[player].energy += home_energy; // Go through house
     }
 
     
-    if (cur_player[player].accumCredit >= GRADUATE_CREDIT) {
+    if (cur_player[player].accumCredit >= GRADUATE_CREDIT) { // 플레이어가 졸업 학점을 달성했을 경우 
         endflag = 1;
         printf("축하해요! 졸업 학점을 달성했습니다.\n", home_energy);
     }
