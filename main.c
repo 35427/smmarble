@@ -43,6 +43,8 @@ typedef struct player {
         int accumCredit; // 누적된 학점 
         int flag_graduate; // 졸업 여부  
         int experience;  
+        char currentLecture[MAX_CHARNAME]; // 현재 듣는 강의 이름
+        
 } player_t;
 
 static player_t *cur_player;
@@ -156,7 +158,10 @@ void actionNode(int player) {
 					grade = rand()%smmObjGrade_all;
 					gradePtr = smmObj_genObject(name, smmObjType_grade, 0, smmObj_getNodeCredit(boardPtr), 0, (smmObjGrade_e)grade);
                     smmdb_addTail(LISTNO_OFFSET_GRADE + player, gradePtr);
-                    printf("들은 학점은 %d, 남은 에너지는 %d 입니다.\n",smmObj_getNodeCredit(boardPtr), cur_player[player].energy);
+                    
+                    // 강의 이름 업데이트
+            		strcpy(cur_player[player].currentLecture, smmObj_getNodeName(boardPtr));
+					printf("들은 학점은 %d, 남은 에너지는 %d, 수강한 강의는 %s입니다.\n",smmObj_getNodeCredit(boardPtr), cur_player[player].energy,cur_player[player].currentLecture);
 				}
 				else{
 					printf("에너지가 부족해 강의를 수강할 수 없습니다.\n");
