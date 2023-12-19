@@ -146,17 +146,40 @@ void actionNode(int player) {
     int type = smmObj_getNodeType(boardPtr);
     char *name = smmObj_getNodeName(boardPtr);
     void *gradePtr;
+    int grade;
 
     switch(type) {
         case SMMNODE_TYPE_LECTURE: // 강의 칸에 도착 
-            cur_player[player].accumCredit += smmObj_getNodeCredit(boardPtr);
+            /*cur_player[player].accumCredit += smmObj_getNodeCredit(boardPtr);
             cur_player[player].energy -= smmObj_getNodeEnergy(boardPtr);
 
             // Grade generation 
             
             gradePtr = smmObj_genObject(name, smmObjType_grade, 0, smmObj_getNodeCredit(boardPtr), 0, 0);
-            smmdb_addTail(LISTNO_OFFSET_GRADE + player, gradePtr);
-            break;
+            smmdb_addTail(LISTNO_OFFSET_GRADE + player, gradePtr);*/
+            {
+            	int lec;
+				printf("강의를 수강하려면 1, 수강하지 않으려면 2를 입력하세요. :\n");
+				scanf("%d", &lec);
+				fflush(stdin);
+				
+				if (lec == 1){
+					if (cur_player[player].energy >= smmObj_getNodeEnergy(boardPtr)){
+					cur_player[player].accumCredit += smmObj_getNodeCredit(boardPtr);
+            		cur_player[player].energy -= smmObj_getNodeEnergy(boardPtr);
+					
+					grade = rand()%smmObjGrade_all;
+					gradePtr = smmObj_genObject(name, smmObjType_grade, 0, smmObj_getNodeCredit(boardPtr), 0, (smmObjGrade_e)grade);
+                    smmdb_addTail(LISTNO_OFFSET_GRADE + player, gradePtr);
+				}
+				else{
+					printf("에너지가 부족해 강의를 수강할 수 없습니다.\n");
+				}
+            }
+        }
+       	  break;
+			
+          
 
         case SMMNODE_TYPE_RESTAURANT: //식당 칸에 도착 
             cur_player[player].energy += smmObj_getNodeEnergy(boardPtr);
@@ -258,7 +281,7 @@ void actionNode(int player) {
 
         case SMMNODE_TYPE_FESTIVAL: // 음식 찬스 칸에 도착
 		{
-			 int random_festival = rand() % festival_nr; // 축제카드의 개수에 맞게 난수 생성
+			int random_festival = rand() % festival_nr; // 축제카드의 개수에 맞게 난수 생성
     		festivall_chance_e* random_festival_data = smmdb_getData(LISTNO_FESTCARD, random_festival); // 축제 데이터 가져오기
 
     		printf("음식 카드 찬스!\n");
@@ -295,7 +318,7 @@ void actionNode(int player) {
             break;
     }
 }
-
+}
 
 
 /*void goForward(int player, int step)
@@ -347,7 +370,7 @@ int main(int argc, const char * argv[]) {
     int credit;
     int energy;
     int i;
-    int initEnergy;
+    int initEnergy = 20;
     int turn=0;
     
     board_nr = 0;
@@ -473,4 +496,4 @@ int main(int argc, const char * argv[]) {
     free(cur_player);
     system("PAUSE");
     return 0;
-} }
+} 

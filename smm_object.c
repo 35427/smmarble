@@ -14,65 +14,49 @@
 #define MAX_NODE        100
 
 
-typedef struct player {
-        int energy;
-        int position;
-        char name[MAX_CHARNAME];
-        int accumCredit; // 누적된 학점 
-        int flag_graduate; // 졸업 여부  
-        int experience;  
-} player_t;
-
-
 static char smmNodeName[SMMNODE_TYPE_MAX][MAX_CHARNAME] = { 
-       "?????",
-       "???????",
-       "?????",
-       "??",
-       "?????????",
-       "????????",
-       "???????"
+       "강의실",
+       "실험실",
+       "실험실로이동",
+       "집",
+       "음식찬스",
+       "축제시간",
+       "식당"
 };
 
-char* smmObj_getTypeName(int type) // 노드의 타입을 가져옴 
+char* smmObj_getTypeName(int type) // 노드의 타입 이름을 가져옴 
 {
       return (char*)smmNodeName[type];
 }
 
 
-typedef enum smmNode{
-    lecture,
-    restaurant,
-    laboratory,
-    home,
-    gotolab,
-    foodChance,
-    festival
-} smmNode_e;
 
-typedef enum smmObjGrade { // 노드의 성적을 나타냄 
-    
-    smmObjGrade_Ap = 0,
-    smmObjGrade_A0,
-    smmObjGrade_Am,
-    smmObjGrade_Bp,
-    smmObjGrade_B0,
-    smmObjGrade_Bm,
-    smmObjGrade_Cp,
-    smmObjGrade_C0,
-    smmObjGrade_Cm
-    
-}smmObjGrade_e;
+static char smmGradeName[9][MAX_CHARNAME] = {
+	"Ap",
+	"A0",
+	"Am",
+	"Bp",
+	"B0",
+	"B-",
+	"Cp",
+	"C0",
+	"Cm"
+};
+
+char* smmObj_getGradeName(smmObjGrade_e grade) // 노드의 성적을 가져옴 
+{
+      return (char*)smmGradeName[grade];
+}
 
 //1. ????u ???? ????  
 typedef struct smmObject {
        char name[MAX_CHARNAME];
        smmObjType_e objType; 
-       smmObjGrade_e objgrade; 
+       smmObjGrade_e grade; 
        int type;
        int credit;
        int energy;
-       int grade;
+       
 } smmObject_t;
 
 //static smmObject_t smm_node[MAX_NODE];
@@ -80,7 +64,7 @@ typedef struct smmObject {
 
 //3. ???? ??? ????  
 //object generation
-void* smmObj_genObject(char* name, smmObjType_e objType, int type, int credit, int energy, smmObjGrade_e objgrade)
+void* smmObj_genObject(char* name, smmObjType_e objType, int type, int credit, int energy, smmObjGrade_e grade)
 {    
     smmObject_t* ptr;
     
@@ -121,5 +105,9 @@ int smmObj_getNodeEnergy(void* obj) // 노드의 에너지를 가져옴
     smmObject_t* ptr = (smmObject_t*)obj;
     return ptr->energy;
 }
-
+int smmObj_getNodeGrade(void* obj) // 노드의 성적을 가져옴 
+{
+	smmObject_t* ptr= (smmObject_t*)obj;
+    return ptr->grade;
+}
 

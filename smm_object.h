@@ -37,20 +37,31 @@ typedef enum smmObjType{
     festival
 */
 
+typedef enum smmObjGrade{
+	smmObjGrade_Ap =0,
+	smmObjGrade_A0,
+	smmObjGrade_Am,
+	smmObjGrade_BP,
+	smmObjGrade_B0,
+	smmObjGrade_Bm,
+	smmObjGrade_Cp,
+	smmObjGrade_C0,
+	smmObjGrade_Cm,
+	smmObjGrade_all
+}smmObjGrade_e;
 
-typedef enum smmObjGrade_e smmObjGrade_e;
 //object generation
-void* smmObj_genObject(char* name, smmObjType_e objType, int type, int credit, int energy, smmObjGrade_e objgrade);
+void* smmObj_genObject(char* name, smmObjType_e objType, int type, int credit, int energy, smmObjGrade_e grade);
 
 //member retrieving
 char* smmObj_getNodeName(void*obj);
 int smmObj_getNodeType(void*obj);
 int smmObj_getNodeCredit(void*obj);
 int smmObj_getNodeEnergy(void*obj);
-
+int smmObj_getNodeGrade(void*obj);
 
 //element to string
 char* smmObj_getTypeName(int type);
-
+char* smmObj_getGradeName(smmObjGrade_e grade);
 
 #endif /* smm_object_h */
