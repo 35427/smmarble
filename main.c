@@ -121,10 +121,12 @@ void generatePlayers(int n, int initEnergy) //새 플레이어를 생성
 int rolldie(int player) // 주사위를 굴림 
 {
     char c;
+    if (cur_player[player].position == SMMNODE_TYPE_LECTURE){
+	 
     printf(" Press any key to roll a die (press g to see grade): ");
     c = getchar();
     fflush(stdin);
-    
+    }
 
     if (c == 'g')
         printGrades(player);
@@ -417,6 +419,7 @@ int main(int argc, const char * argv[]) {
         
         //4-2. die rolling (if not in experiment)        
         die_result = rolldie(turn);
+        printf("주사위 결과 : %i\n", die_result);
         
         //4-3. go forward
         goForward(turn, die_result);
@@ -436,8 +439,7 @@ int main(int argc, const char * argv[]) {
         break;
     }
 
-	
-
+	printf("플레이어의 위치 : node %i, %s\n", cur_player[turn].position, smmObj_getNodeName(smmdb_getData(LISTNO_NODE, cur_player[turn].position)));
 
       //4-4. take action at the destination node of the board
         actionNode(turn);
