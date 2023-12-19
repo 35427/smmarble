@@ -190,25 +190,20 @@ void actionNode(int player) {
     int attempt = rolldie(player); // 주사위 굴리기
     printf("주사위 결과: %d\n", attempt);
 
-    if (cur_player[player].flag_graduate == 1) {
-        int attempt = rand() % MAX_DIE + 1;
+    if (attempt != success) {
+        
         printf("나온 수는 %d, 실험을 완료할 수 있는 숫자는 %d입니다.\n", attempt, success);
 
         if (attempt < success) {
             printf("다시 한 번 도전해보세요.\n");
             cur_player[player].energy -= smmObj_getNodeEnergy(boardPtr);
-        } else if (attempt == success) {
+        } 
+    } 
+	else if (attempt >= success) {
             printf("실험 종료입니다.\n");
             cur_player[player].flag_graduate = 0;
-        } else {
-            printf("실험 종료입니다.\n");
         }
-    } else 
         
-    
-
-    cur_player[player].experience = 1;
-    
     break;
 }
 
