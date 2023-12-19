@@ -35,7 +35,6 @@ static int success;
 static int endflag = 0;
 
 
-
 typedef struct player {
         int energy;
         int position;
@@ -44,6 +43,7 @@ typedef struct player {
         int flag_graduate; // 졸업 여부  
         int experience;  
         char currentLecture[MAX_CHARNAME]; // 현재 듣는 강의 이름
+        
         
 } player_t;
 
@@ -436,7 +436,7 @@ int main(int argc, const char * argv[]) {
     // 플레이어가 졸업 학점을 달성하고 집에 도착했을 경우 
     if (cur_player[turn].accumCredit >= GRADUATE_CREDIT && cur_player[turn].position == 0) {
         printf("%s플레이어가 졸업 학점을 달성하고 집에 도착하여 게임이 종료됩니다.\n", cur_player[turn].name);
-        break;
+        printf("승리한 플레이어의 이름 : %s", cur_player[turn].name);
     }
 
 	printf("플레이어의 위치 : node %i, %s\n", cur_player[turn].position, smmObj_getNodeName(smmdb_getData(LISTNO_NODE, cur_player[turn].position)));
