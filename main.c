@@ -45,11 +45,32 @@ typedef struct player {
         char currentLecture[MAX_CHARNAME]; // 현재 듣는 강의 이름
         int success;
         
+        // 수강한 강의 정보를 저장할 배열
+    	char takenCourses[100][MAX_CHARNAME];
+    	int numCoursesTaken;
+        
 } player_t;
+
+
 
 static player_t *cur_player;
 //static player_t cur_player[MAX_PLAYER];
 
+
+// 함수 선언
+int checkCourseTaken(int player, char *lectureName);
+
+// 수강한 강의 중복 체크 함수
+int checkCourseTaken(int player, char *lectureName) {
+    int i;
+    for (i = 0; i < cur_player[player].numCoursesTaken; ++i) {
+        if (strcmp(cur_player[player].takenCourses[i], lectureName) == 0) {
+            // 이미 수강한 강의인 경우
+            return 1; // 중복 수강
+        }
+    }
+    return 0; // 수강하지 않은 강의
+}
 #if 0
 static int player_energy[MAX_PLAYER];
 static int player_position[MAX_PLAYER];
@@ -154,9 +175,14 @@ void actionNode(int player) {
 				
 				if (lec == 1){
 					if (cur_player[player].energy >= smmObj_getNodeEnergy(boardPtr)){
+						// 해당 강의가 이미 수강한 강의인지 체크
+               		 if (checkCourseTaken(player, smmObj_getNodeName(boardPtr)) == 1) {
+                    printf("이미 수강한 강의입니다.\n");}
+					
+					else{
 					cur_player[player].accumCredit += smmObj_getNodeCredit(boardPtr);
             		cur_player[player].energy -= smmObj_getNodeEnergy(boardPtr);
-					
+            		
 					grade = rand()%smmObjGrade_all;
 					gradePtr = smmObj_genObject(name, smmObjType_grade, 0, smmObj_getNodeCredit(boardPtr), 0, (smmObjGrade_e)grade);
                     smmdb_addTail(LISTNO_OFFSET_GRADE + player, gradePtr);
@@ -164,7 +190,10 @@ void actionNode(int player) {
                     
             		strcpy(cur_player[player].currentLecture, smmObj_getNodeName(boardPtr));
 					printf("들은 학점은 %d, 남은 에너지는 %d, 수강한 강의는 %s입니다.\n",smmObj_getNodeCredit(boardPtr), cur_player[player].energy,cur_player[player].currentLecture);
-				}
+					// 수강한 강의를 추가
+                    strcpy(cur_player[player].takenCourses[cur_player[player].numCoursesTaken], smmObj_getNodeName(boardPtr));
+                    cur_player[player].numCoursesTaken++;
+				}	}
 				else{
 					printf("에너지가 부족해 강의를 수강할 수 없습니다.\n");
 				}
