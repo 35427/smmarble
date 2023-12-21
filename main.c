@@ -479,10 +479,6 @@ int main(int argc, const char * argv[]) {
         
     }
 
-    // 주사위를 굴리고 이동 
-    die_result = rolldie(turn);
-    goForward(turn, die_result);
-
     // 플레이어가 졸업 학점을 달성하고 집에 도착했을 경우 
     if (cur_player[turn].accumCredit >= GRADUATE_CREDIT && cur_player[turn].position == 0) {
         printf("%s플레이어가 졸업 학점을 달성하고 집에 도착하여 게임이 종료됩니다.\n", cur_player[turn].name);
