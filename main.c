@@ -209,7 +209,7 @@ void actionNode(int player) {
             break;
 
         case SMMNODE_TYPE_LABORATORY: //실험실 칸에 도착 
-            if (cur_player[player].experience) {
+            if (cur_player[player].experience = 1) {
                 printf("화이팅! 행운을 빌어요.\n");
 				cur_player[player].position = 8; // 실험실 칸으로 이동 
             } else {
@@ -219,6 +219,7 @@ void actionNode(int player) {
 
 
     case SMMNODE_TYPE_GOTOLAB: { // 실험실로 가야 하는 칸에 도착 
+    cur_player[player].experience = 1;
     printf("실험실로 가야합니다. 행운을 빌어요!\n");
      
     int success = rand() % MAX_DIE + 1;
@@ -232,14 +233,16 @@ void actionNode(int player) {
         
         printf("나온 수는 %d, 실험을 완료할 수 있는 숫자는 %d입니다.\n", attempt, success);
 
-        if (attempt < cur_player[player].success) { // 실패했을 경우 
+        if (attempt <= cur_player[player].success) { // 실패했을 경우 
             printf("다시 한 번 도전해보세요.\n");
             cur_player[player].energy -= smmObj_getNodeEnergy(boardPtr);
+            cur_player[player].position = 8; // 실험실 칸으로 이동 
         } 
     } 
-	else if (attempt >= cur_player[player].success) { // 성공했을 경우 
+	else if (attempt == cur_player[player].success) { // 성공했을 경우 
             printf("실험 종료입니다.\n");
             cur_player[player].flag_graduate = 0;
+            cur_player[player].experience = 0;
         }
         
     break;
