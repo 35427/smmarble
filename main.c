@@ -31,7 +31,7 @@ static int festival_nr;
 
 static int player_nr;
 static int home_energy = 10;
-static int success;
+//static int success;
 static int endflag = 0;
 
 
@@ -43,7 +43,7 @@ typedef struct player {
         int flag_graduate; // 졸업 여부  
         int experience;  
         char currentLecture[MAX_CHARNAME]; // 현재 듣는 강의 이름
-        
+        int success;
         
 } player_t;
 
@@ -161,7 +161,7 @@ void actionNode(int player) {
 					gradePtr = smmObj_genObject(name, smmObjType_grade, 0, smmObj_getNodeCredit(boardPtr), 0, (smmObjGrade_e)grade);
                     smmdb_addTail(LISTNO_OFFSET_GRADE + player, gradePtr);
                     
-                    // 강의 이름 업데이트
+                    
             		strcpy(cur_player[player].currentLecture, smmObj_getNodeName(boardPtr));
 					printf("들은 학점은 %d, 남은 에너지는 %d, 수강한 강의는 %s입니다.\n",smmObj_getNodeCredit(boardPtr), cur_player[player].energy,cur_player[player].currentLecture);
 				}
@@ -182,6 +182,7 @@ void actionNode(int player) {
         case SMMNODE_TYPE_LABORATORY: //실험실 칸에 도착 
             if (cur_player[player].experience) {
                 printf("화이팅! 행운을 빌어요.\n");
+				cur_player[player].position = 8; // 실험실 칸으로 이동 
             } else {
                 printf("그렇지만 실험실로 가지 않아도 됩니다! 다행이네요. \n");
             }
@@ -190,6 +191,7 @@ void actionNode(int player) {
 
     case SMMNODE_TYPE_GOTOLAB: { // 실험실로 가야 하는 칸에 도착 
     printf("실험실로 가야합니다. 행운을 빌어요!\n");
+     
     int success = rand() % MAX_DIE + 1;
     printf("%d나 그 이상의 수가 나오면 실험 완료입니다.\n", success);
  	printf("아무 키나 눌러 주사위를 한 번 더 굴리세요.\n");
@@ -201,12 +203,12 @@ void actionNode(int player) {
         
         printf("나온 수는 %d, 실험을 완료할 수 있는 숫자는 %d입니다.\n", attempt, success);
 
-        if (attempt < success) {
+        if (attempt < cur_player[player].success) { // 실패했을 경우 
             printf("다시 한 번 도전해보세요.\n");
             cur_player[player].energy -= smmObj_getNodeEnergy(boardPtr);
         } 
     } 
-	else if (attempt >= success) {
+	else if (attempt >= cur_player[player].success) { // 성공했을 경우 
             printf("실험 종료입니다.\n");
             cur_player[player].flag_graduate = 0;
         }
@@ -218,9 +220,9 @@ void actionNode(int player) {
         	{
         		if (food_nr>0){
 				
-        		int random_food = rand()%food_nr; 
+        		int random_food = rand()%food_nr; // 음식카드 개수에 맞게 난수 생성 
         	
-        		void* randomFoodCard = smmdb_getData(LISTNO_FOODCARD, random_food);
+        		void* randomFoodCard = smmdb_getData(LISTNO_FOODCARD, random_food); // 음식카드 데이터 가져오기 
         		printf("음식 카드 찬스!\n");
                 printf("당신이 먹을 음식은 %s입니다.\n", smmObj_getNodeName(randomFoodCard));
 		        cur_player[player].energy += smmObj_getNodeEnergy(randomFoodCard);
@@ -262,7 +264,7 @@ void goForward(int player, int step) {
 
     if (secondRoll != randEscape) {
         printf("한 번 더!\n");
-        return; // 플레이어의 turn은 여기서 종료되고 다음 플레이어의 turn으로 넘어감
+        return; // 기존 플레이어의 턴은 여기서 종료되고 다음 플레이어의 턴으로 넘어감
     }
 
     cur_player[player].experience = 1;
@@ -273,10 +275,28 @@ void goForward(int player, int step) {
 
     if (nextNode >= board_nr) { // 플레이어가 집을 지나치거나 집에 도착했을 경우 
         printf("집에서 쉬었습니다! 당신은 에너지를 회복했습니다.\n", home_energy);
-        cur_player[player].energy += home_energy; // Go through house
+        cur_player[player].energy += home_energy; 
     }
+    
+    if (cur_player[player].accumCredit >= GRADUATE_CREDIT) { // 플레이어가 졸업 학점을 다 채웠을 경우 
+        cur_player[player].position = 0; // 집으로 이동 
+            }
+            
+    if((cur_player[player].flag_graduate == 1 && cur_player[player].position!=0)||cur_player[player].flag_graduate==0)
+    {
+    	int i;
+        for (i = 0; i < step; i++) // 플레이어가 지나온 칸들을 차례대로 출력 
+		{
+            int pos = (cur_player[player].position - step + i + smmdb_len(LISTNO_NODE)) % smmdb_len(LISTNO_NODE);
+            printf("-> %s\n", smmObj_getNodeName(smmdb_getData(LISTNO_NODE, pos)));
+        }
+        
+        // 플레이어가 최종 도착한 위치와 노드 출력 
+        int pos = (cur_player[player].position - step + i + smmdb_len(LISTNO_NODE)) % smmdb_len(LISTNO_NODE);
+		printf(" %s 플레이어는 node %i, %s로 이동합니다.\n", 
+	    cur_player[player].name, cur_player[player].position,smmObj_getNodeName(smmdb_getData(LISTNO_NODE, pos)));
+} }
 
-}
 
 
 
@@ -427,9 +447,10 @@ int main(int argc, const char * argv[]) {
 	// 플레이어가 졸업 학점을 달성했을 경우 
     if (cur_player[turn].accumCredit >= GRADUATE_CREDIT) {
         printf("%s플레이어가 졸업 학점을 달성하였습니다!\n", cur_player[turn].name);
+        
     }
 
-    // Roll the die and move forward
+    // 주사위를 굴리고 이동 
     die_result = rolldie(turn);
     goForward(turn, die_result);
 
@@ -437,6 +458,7 @@ int main(int argc, const char * argv[]) {
     if (cur_player[turn].accumCredit >= GRADUATE_CREDIT && cur_player[turn].position == 0) {
         printf("%s플레이어가 졸업 학점을 달성하고 집에 도착하여 게임이 종료됩니다.\n", cur_player[turn].name);
         printf("승리한 플레이어의 이름 : %s", cur_player[turn].name);
+        break; // 게임 종료 
     }
 
 	printf("플레이어의 위치 : node %i, %s\n", cur_player[turn].position, smmObj_getNodeName(smmdb_getData(LISTNO_NODE, cur_player[turn].position)));
