@@ -128,13 +128,15 @@ void generatePlayers(int n, int initEnergy) //새 플레이어를 생성
         fflush(stdin);
          
         //set position
-        //player_position[i] = 0;
         cur_player[i].position = 0;
          
         //set energy
-        //player_energy[i] = initEnergy;
         cur_player[i].energy = initEnergy;
+        
+        //set accumulated credit
         cur_player[i].accumCredit = 0;
+        
+        //set experiment success value
         cur_player[i].flag_graduate = 0;
     }
 }
@@ -150,13 +152,13 @@ int rolldie(int player) // 주사위를 굴림
     fflush(stdin);
     }
 
-    if (c == 'g')
+    if (c == 'g') // g를 누르면 플레이어의 성적을 출력 
         printGrades(player);
 
-    return (rand()%MAX_DIE + 1);
+    return (rand()%MAX_DIE + 1); // 1과 MAX_DIE 사이의 랜덤 수를 반환 
 }
 
-float gradeAverage(int player) {
+float gradeAverage(int player) { // 평균 학점 계산 함수 
     float totalPoints = 0;
     int numGrades = smmdb_len(LISTNO_OFFSET_GRADE + player);
     int i;
@@ -206,7 +208,7 @@ float gradeAverage(int player) {
 }
 
 //action code when a player stays at a node
-void actionNode(int player) {
+void actionNode(int player) {  
     void *boardPtr = smmdb_getData(LISTNO_NODE, cur_player[player].position);
     int type = smmObj_getNodeType(boardPtr);
     char *name = smmObj_getNodeName(boardPtr);
@@ -216,7 +218,7 @@ void actionNode(int player) {
     switch(type) {
         case SMMNODE_TYPE_LECTURE: // 강의 칸에 도착 
             {
-               int lec;
+            int lec;
             printf("강의를 수강하려면 1을, 수강하지 않으려면 2를 입력하세요. :");
             scanf("%d", &lec);
             fflush(stdin);
@@ -490,7 +492,7 @@ int main(int argc, const char * argv[]) {
         
       printf("%s 플레이어가 졸업 학점을 달성하고 집에 도착하여 게임이 종료됩니다.\n", cur_player[turn].name);
       printf("\n\n-------------------------------------------------------------------------------------------\n");
-        printf("---------------------------- 승리한 플레이어가 수강한 강의와 학점---------------------------");
+        printf("---------------------------- %s 플레이어가 수강한 강의와 학점---------------------------",cur_player[turn].name );
         printf("\n-------------------------------------------------------------------------------------------\n\n");
         printGrades(turn); // 수강한 전체 강의, 학점 출력 
         break; // 게임 종료 
